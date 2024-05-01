@@ -35,14 +35,27 @@ const Player = ({
     transform: `translateX(${songInfo.animationPercentage}%)`,
   };
 
+  // useEffect(() => {
+  //   if (isMilking) {
+  //     const timer = setInterval(() => {
+  //       setMilkingTime((prevTime) => prevTime + 1);
+  //     }, 1000);
+  //     return () => clearInterval(timer);
+  //   }
+  // }, [isMilking]);
+
   useEffect(() => {
-    if (isMilking) {
+    if (isMilking && isPlaying) {
       const timer = setInterval(() => {
         setMilkingTime((prevTime) => prevTime + 1);
       }, 1000);
+      setMilkingTimer(timer);
       return () => clearInterval(timer);
+    } else {
+      clearInterval(milkingTimer);
     }
-  }, [isMilking]);
+  }, [isMilking, isPlaying]);
+  
 
   const buttonStyle = {
     backgroundColor: "rgb(179, 207, 255)",
@@ -125,9 +138,11 @@ const Player = ({
       audioRef.current.pause();
       setIsPlaying(!isPlaying);
       setIsSongPlaying(false);
+      clearInterval(milkingTimer);
     } else {
       audioRef.current.play();
       setIsPlaying(!isPlaying);
+      clearInterval(milkingTimer);
       setIsSongPlaying(true);
       if (!isMilking) {
         setIsMilking(true);
